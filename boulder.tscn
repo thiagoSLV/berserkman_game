@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqyy84lokeike"]
+
+[ext_resource type="Script" path="res://boulder.cs" id="1_7pmwl"]
+[ext_resource type="Texture2D" uid="uid://sm54ki5o5fai" path="res://sprites/props/boulder.png" id="2_ryg30"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_grs3v"]
+size = Vector2(32, 32)
+
+[node name="boulder" type="Area2D"]
+collision_layer = 16
+collision_mask = 3
+script = ExtResource("1_7pmwl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ryg30")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_grs3v")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.6, 1.6)
+
+[connection signal="body_entered" from="." to="." method="OnAreaBodyEntered"]

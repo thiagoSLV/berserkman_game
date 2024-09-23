@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cvgi7yxjo4deh"
+path="res://.godot/imported/Mega Man (NES) Music - Boss Battle - GBelair.mp3-77cd8451d346d53ca73f0aded6a6ca26.mp3str"
+
+[deps]
+
+source_file="res://Mega Man (NES) Music - Boss Battle - GBelair.mp3"
+dest_files=["res://.godot/imported/Mega Man (NES) Music - Boss Battle - GBelair.mp3-77cd8451d346d53ca73f0aded6a6ca26.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

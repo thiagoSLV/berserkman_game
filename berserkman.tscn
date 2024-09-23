@@ -1,0 +1,189 @@
+[gd_scene load_steps=19 format=3 uid="uid://b7d24sjd2gieq"]
+
+[ext_resource type="Script" path="res://berserkman.cs" id="1_eeivd"]
+[ext_resource type="Texture2D" uid="uid://vkp35dmpw1ya" path="res://sprites/bersekman_spriteSheet.png" id="1_v3wis"]
+[ext_resource type="Script" path="res://CharacterCamera.cs" id="3_bg4af"]
+[ext_resource type="Script" path="res://MyArea2D.cs" id="4_b88xy"]
+[ext_resource type="Texture2D" uid="uid://d0sayuc585e4e" path="res://sprites/deathAnimation.png" id="5_k518a"]
+[ext_resource type="PackedScene" uid="uid://b07al0muj1su8" path="res://HealthBar.tscn" id="6_mkc4j"]
+[ext_resource type="AudioStream" uid="uid://56br1ravnma3" path="res://hurt_sfx.wav" id="7_b2s05"]
+[ext_resource type="AudioStream" uid="uid://1etm1mwwscy7" path="res://death_1.wav" id="8_85yry"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jx3rn"]
+radius = 6.0
+height = 24.0
+
+[sub_resource type="Animation" id="Animation_q5xto"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 1.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="Animation" id="Animation_nu4ay"]
+resource_name = "running"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11]
+}
+
+[sub_resource type="Animation" id="Animation_crlwd"]
+resource_name = "running_attacking"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 14, 15]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_x3jsr"]
+_data = {
+"idle": SubResource("Animation_q5xto"),
+"running": SubResource("Animation_nu4ay"),
+"running_attacking": SubResource("Animation_crlwd")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bl6wn"]
+size = Vector2(19, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r3eko"]
+atlas = ExtResource("5_k518a")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4nuk8"]
+atlas = ExtResource("5_k518a")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eda5u"]
+atlas = ExtResource("5_k518a")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3x2jg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r3eko")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4nuk8")
+}, {
+"duration": 0.9,
+"texture": SubResource("AtlasTexture_eda5u")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+light_mask = 2
+visibility_layer = 2
+collision_layer = 2
+script = ExtResource("1_eeivd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_v3wis")
+hframes = 4
+vframes = 4
+region_rect = Rect2(0, 0, 52, 30)
+
+[node name="hitbox" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("CapsuleShape2D_jx3rn")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_x3jsr")
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(4, 0)
+limit_left = 0
+limit_top = 0
+limit_right = 2560
+limit_bottom = 240
+limit_smoothed = true
+position_smoothing_speed = 0.0
+script = ExtResource("3_bg4af")
+
+[node name="ShakeTimer" type="Timer" parent="Camera2D"]
+one_shot = true
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(17.5, 4)
+collision_layer = 2
+collision_mask = 4
+monitoring = false
+script = ExtResource("4_b88xy")
+
+[node name="hurtbox" type="CollisionShape2D" parent="Area2D"]
+light_mask = 2
+visibility_layer = 4
+position = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_bl6wn")
+debug_color = Color(0.952941, 0.2, 0.207843, 0.419608)
+
+[node name="attackBuffer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="invencibilityTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="knockBackTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[node name="stunTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0.500002, 3.25)
+scale = Vector2(1.84375, 1.79688)
+sprite_frames = SubResource("SpriteFrames_3x2jg")
+animation = &"death"
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[node name="CanvasLayer" parent="." instance=ExtResource("6_mkc4j")]
+
+[node name="HurtSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_b2s05")
+
+[node name="DeathSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_85yry")
+
+[connection signal="body_entered" from="Area2D" to="." method="OnArea2dBodyEntered"]
+[connection signal="timeout" from="attackBuffer" to="." method="OnAttackBufferTimeout"]
+[connection signal="timeout" from="stunTimer" to="." method="OnStunTimerTimeout"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="OnVisibleOnScreenNotifier2dScreenExited"]

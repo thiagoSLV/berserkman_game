@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://j1kivedilkkx"]
+
+[ext_resource type="Script" path="res://pebble.cs" id="1_ap38k"]
+[ext_resource type="Texture2D" uid="uid://d1dpsth336x1t" path="res://sprites/props/pebbles.png" id="1_e5x74"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oidq6"]
+size = Vector2(16, 16)
+
+[node name="pebble" type="Area2D"]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1_ap38k")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_e5x74")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_oidq6")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(0.8, 0.8)
+
+[connection signal="body_entered" from="." to="." method="OnAreaBodyEntered"]

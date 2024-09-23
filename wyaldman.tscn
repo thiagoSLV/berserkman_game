@@ -1,0 +1,116 @@
+[gd_scene load_steps=9 format=3 uid="uid://cv3x212wwoxhj"]
+
+[ext_resource type="Script" path="res://wyaldman.cs" id="1_53fwx"]
+[ext_resource type="Texture2D" uid="uid://1fai6ypfnqaf" path="res://sprites/enemies/wyaldman_spriteSheet.png" id="2_nsrx1"]
+[ext_resource type="PackedScene" uid="uid://b07al0muj1su8" path="res://HealthBar.tscn" id="3_wvo7r"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ydg2"]
+size = Vector2(30, 50)
+
+[sub_resource type="Animation" id="Animation_nvt6d"]
+resource_name = "RESET"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_d2coi"]
+resource_name = "attack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [3, 5]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"InstantiateBoulder"
+}, {
+"args": [],
+"method": &"ThrowBoulder"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_7xv6s"]
+resource_name = "jump"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hvo2n"]
+_data = {
+"RESET": SubResource("Animation_nvt6d"),
+"attack": SubResource("Animation_d2coi"),
+"jump": SubResource("Animation_7xv6s")
+}
+
+[node name="wyaldman" type="CharacterBody2D"]
+light_mask = 2
+visibility_layer = 4
+collision_layer = 4
+script = ExtResource("1_53fwx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_7ydg2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_nsrx1")
+hframes = 3
+vframes = 2
+
+[node name="hurtbox" type="Area2D" parent="."]
+position = Vector2(0, 2)
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+shape = SubResource("RectangleShape2D_7ydg2")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+reset_on_save = false
+libraries = {
+"": SubResource("AnimationLibrary_hvo2n")
+}
+
+[node name="JumpCooldown" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="CanvasLayer" parent="." instance=ExtResource("3_wvo7r")]
+
+[connection signal="body_entered" from="hurtbox" to="." method="OnHurtboxBodyEntered"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="OnAttackAnimationFinished"]

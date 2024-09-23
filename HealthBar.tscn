@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b07al0muj1su8"]
+
+[ext_resource type="Script" path="res://HealthBar.cs" id="1_huyg5"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="HealthBar" type="Node2D" parent="."]
+position = Vector2(5, 5)
+script = ExtResource("1_huyg5")
